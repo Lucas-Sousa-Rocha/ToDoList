@@ -5,6 +5,7 @@ import com.quantumwebsystem.ToDoList_BackEnd.Repository.ToDoRepository;
 import com.quantumwebsystem.ToDoList_BackEnd.Validator.ToDoValidator;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,7 @@ public class ToDoService {
     // METODO SALVAR
     public void salvar(ToDo novoToDo){
         toDoValidator.validar(novoToDo);
+        novoToDo.setDataCriacao(LocalDate.now());
         toDoRepository.save(novoToDo);
     }
 
@@ -35,6 +37,10 @@ public class ToDoService {
     //LISTAR TO DOS OS TODOS
     public List<ToDo> listarTodos() {
         return toDoRepository.findAll();
+    }
+
+    public List<ToDo> listarEmAndamento(){
+        return toDoRepository.findByConcluidoFalse();
     }
 
     //EXCLUIR TO DO POR ID

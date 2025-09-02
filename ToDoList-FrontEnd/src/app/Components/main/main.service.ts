@@ -16,4 +16,8 @@ export class MainService {
   listarTodos(): Observable<Todo[]> {
     return this.httpclient.get<Todo[]>(`${this.API_PATH}todo`);
   }
+
+  listarEmAndamento(): Observable<Todo[]> {
+    return this.httpclient.get<Todo[]>(`${this.API_PATH}todo/em-andamento`);
+  }
 }

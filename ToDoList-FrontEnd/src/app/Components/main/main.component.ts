@@ -32,4 +32,15 @@ listarTodos() {
   });
 }
 
+listarEmAndamento() {
+  console.log('listarTodos chamado'); // ✅ verifica se a função roda
+  this.mainService.listarEmAndamento().subscribe({
+    next: (data) => {
+      console.log('Dados recebidos:', data); // ✅ verifica resposta do backend
+      this.todos = data;
+    },
+    error: (err) => console.error('Erro ao listar todos:', err)
+  });
+}
+
 }

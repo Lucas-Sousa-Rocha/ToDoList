@@ -42,6 +42,11 @@ public class ToDoController {
         return toDoService.listarTodos();
     }
 
+    @GetMapping("em-andamento")
+    public List<ToDo> listarEmAndamento(){
+        return toDoService.listarEmAndamento();
+    }
+
     @DeleteMapping("{id}")
     public String excluirToDo(@PathVariable Long id, ToDo novoToDo) {
         Optional<ToDo> optionalToDo = toDoService.buscarPorId(id);
