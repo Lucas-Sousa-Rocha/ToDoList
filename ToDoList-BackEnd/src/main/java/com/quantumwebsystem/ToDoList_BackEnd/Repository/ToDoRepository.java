@@ -4,6 +4,7 @@ import com.quantumwebsystem.ToDoList_BackEnd.Model.ToDo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -14,4 +15,6 @@ public interface ToDoRepository extends JpaRepository<ToDo,Long> {
     List<ToDo> findByConcluidoFalse();
 
     List<ToDo> findByConcluidoTrue();
+
+    List<ToDo> findByDataConclusaoAndConcluido(LocalDate data, boolean concluido);
 }

@@ -17,13 +17,16 @@ public class ToDo {
 
     private LocalDate dataCriacao;
 
+    private LocalDate dataConclusao;
+
     public ToDo() {
     }
 
-    public ToDo(String descricao, Boolean concluido, LocalDate dataCriacao) {
+    public ToDo(String descricao, Boolean concluido, LocalDate dataCriacao, LocalDate dataConclusao) {
         this.descricao = descricao;
         this.concluido = concluido;
         this.dataCriacao = dataCriacao;
+        this.dataConclusao = dataConclusao;
     }
 
     public Long getId() {
@@ -56,5 +59,11 @@ public class ToDo {
 
     public void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
+    }
+    public LocalDate getDataConclusao() {
+        return dataConclusao;
+    }
+    public void setDataConclusao(LocalDate dataConclusao) {
+        this.dataConclusao = dataConclusao;
     }
 }

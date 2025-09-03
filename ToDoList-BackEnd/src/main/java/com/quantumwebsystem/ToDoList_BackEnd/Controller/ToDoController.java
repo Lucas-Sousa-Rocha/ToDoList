@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +53,11 @@ public class ToDoController {
     @GetMapping("concluidos")
     public List<ToDo> listarConcluidos(){
         return toDoService.listarConcluidos();
+    }
+
+    @GetMapping("data-e-conclusao")
+    public List<ToDo> listarPorDataEConcluido(@RequestParam(required = false) LocalDate data, @RequestParam(required = false) boolean concluido){
+        return toDoService.listarPorDataEConcluido(data, concluido);
     }
 
     @DeleteMapping("{id}")

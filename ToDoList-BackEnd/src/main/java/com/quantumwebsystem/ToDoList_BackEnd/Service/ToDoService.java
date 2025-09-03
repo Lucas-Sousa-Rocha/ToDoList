@@ -35,7 +35,7 @@ public class ToDoService {
         toDoRepository.save(novoToDo);
     }
 
-    //LISTAR TO DOS OS TODOS
+    //LISTAR TODOS OS ToDoS
     public List<ToDo> listarTodos() {
         return toDoRepository.findAll();
     }
@@ -46,6 +46,11 @@ public class ToDoService {
 
     public List<ToDo> listarConcluidos(){
         return toDoRepository.findByConcluidoTrue();
+    }
+
+
+    public List<ToDo> listarPorDataEConcluido(LocalDate data, boolean concluido){
+        return toDoRepository.findByDataConclusaoAndConcluido(data, concluido);
     }
 
     //EXCLUIR TO DO POR ID
