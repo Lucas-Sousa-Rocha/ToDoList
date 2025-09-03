@@ -41,15 +41,6 @@
   to { transform: scale(1); opacity: 1; }
 }
 
-/* Botão principal */
-.btn-criar {
-  background: #007bff;
-  color: white;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
 
 .btn-criar:hover {
   background: #0056b3;

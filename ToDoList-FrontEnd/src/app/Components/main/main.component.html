@@ -1,16 +1,20 @@
 <main>
   <div>
-    <button (click)="listarEmAndamento()">Em Andamento</button>
-    <button (click)="listarConcluidos()">Concluidos</button>
-    <button (click)="listarTodos()">Todas As Tarefas</button>
-    <button  (click)="abrirModal()" class="btn-criar">Criar Nova Tarefa</button>
+    <button (click)="listarEmAndamentoPorData()">Em Andamento</button>
+    <button (click)="listarConcluidosPorData()">Concluidos</button>
+    <button (click)="listarTodosPorData()">Todas As Tarefas</button>
+    <button (click)="abrirModal()" class="btn-criar">Criar Nova Tarefa</button>
+    <input type="date" [(ngModel)]="dataFiltro" name="dataFiltro" required>
   </div>
   <div>
     <h2>Lista de Tarefas</h2>
     <ul *ngFor="let t of todos; let i = index">
+      <li hidden>{{ t.id }}</li>
       <li>{{ t.descricao }}</li>
       <li>{{ t.concluido ? 'Concluido' : 'Em andamento' }}</li>
       <li>{{ t.dataCriacao }}</li>
+      <li><button>Excluir</button></li>
+      <li><button>Concluir</button></li>
     </ul>
   </div>
 

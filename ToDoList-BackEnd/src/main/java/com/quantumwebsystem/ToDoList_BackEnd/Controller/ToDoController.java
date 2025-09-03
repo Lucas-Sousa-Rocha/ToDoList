@@ -2,10 +2,12 @@ package com.quantumwebsystem.ToDoList_BackEnd.Controller;
 
 import com.quantumwebsystem.ToDoList_BackEnd.Model.ToDo;
 import com.quantumwebsystem.ToDoList_BackEnd.Service.ToDoService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.function.ServerRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("todo")
-@CrossOrigin(origins = "http://localhost:4200/", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+@CrossOrigin(origins = "http://localhost:4200", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class ToDoController {
 
     private final ToDoService toDoService;
@@ -33,31 +35,20 @@ public class ToDoController {
         }
     }
 
-
     @PutMapping("{id}")
     public void atualizarStatus(@PathVariable long id, @RequestBody ToDo novoToDo) {
         novoToDo.setId(id);
         this.toDoService.atualizarStatus(novoToDo);
     }
 
-    @GetMapping
-    public List<ToDo> listarTodos() {
-        return toDoService.listarTodos();
-    }
-
-    @GetMapping("em-andamento")
-    public List<ToDo> listarEmAndamento(){
-        return toDoService.listarEmAndamento();
-    }
-
-    @GetMapping("concluidos")
-    public List<ToDo> listarConcluidos(){
-        return toDoService.listarConcluidos();
-    }
-
-    @GetMapping("data-e-conclusao")
-    public List<ToDo> listarPorDataEConcluido(@RequestParam(required = false) LocalDate data, @RequestParam(required = false) boolean concluido){
+    @GetMapping("data-e-concluido")
+    public List<ToDo> listarPorDataEConluido(@RequestParam(required = false) LocalDate data, @RequestParam(required = false) boolean concluido){
         return toDoService.listarPorDataEConcluido(data, concluido);
+    }
+
+    @GetMapping("listar-por-data")
+    public List<ToDo> listarTodosPorData(@RequestParam(required = false) LocalDate data){
+        return toDoService.listarPorData(data);
     }
 
     @DeleteMapping("{id}")

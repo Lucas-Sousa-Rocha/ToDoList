@@ -8,52 +8,92 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-main',
   imports: [CommonModule, FormsModule],
   templateUrl: './main.component.html',
-  styleUrl: './main.component.css'
+  styleUrl: './main.component.css',
 })
 export class MainComponent implements OnInit {
-
   mostrarModal: boolean = false;
 
-  constructor(private mainService: MainService) { }
+  dataFiltro: string = new Date().toISOString().split('T')[0]; 
+
+  constructor(private mainService: MainService) {}
 
   todos: Todo[] = [];
   novaDescricao: string = '';
   novoTodo = {
-  descricao: this.novaDescricao,
-  concluido: false // por padrão começa como não concluído
+    descricao: this.novaDescricao,
+    concluido: false, 
   };
+  
+  listarEmAndamentoPorData() {
+    if (!this.dataFiltro) {
+      console.warn('Selecione uma data!');
+      return;
+    }
+    // converte string para Date
+    const dataConvertida = new Date(this.dataFiltro);
 
-  listarTodos() {
     console.log('listarTodos chamado'); // ✅ verifica se a função roda
-    this.mainService.listarTodos().subscribe({
+    this.mainService.listarPorDataEConcluido(false, dataConvertida).subscribe({
       next: (data) => {
-        console.log('Dados recebidos:', data); // ✅ verifica resposta do backend
+        console.log('Dados recebidos:', data ); // ✅ verifica resposta do backend
+        console.log("Listar Em Andamento Por Data")
         this.todos = data;
       },
-      error: (err) => console.error('Erro ao listar todos:', err)
+      error: (err) => console.error('Erro ao listar todos:', err),
     });
   }
 
-  listarEmAndamento() {
+  listarTodosPorData() {
+    if (!this.dataFiltro) {
+      console.warn('Selecione uma data!');
+      return;
+    }
+    // converte string para Date
+    const dataConvertida = new Date(this.dataFiltro);
     console.log('listarTodos chamado'); // ✅ verifica se a função roda
-    this.mainService.listarEmAndamento().subscribe({
+    this.mainService.listarTodosPorData(dataConvertida).subscribe({
       next: (data) => {
-        console.log('Dados recebidos:', data); // ✅ verifica resposta do backend
+        console.log('Dados recebidos:', data ); // ✅ verifica resposta do backend
         this.todos = data;
       },
-      error: (err) => console.error('Erro ao listar todos:', err)
+      error: (err) => console.error('Erro ao listar todos:', err),
     });
   }
 
-  listarConcluidos() {
+  listarConcluidosPorData() {
+    if (!this.dataFiltro) {
+      console.warn('Selecione uma data!');
+      return;
+    }
+    // converte string para Date
+    const dataConvertida = new Date(this.dataFiltro);
     console.log('listarTodos chamado'); // ✅ verifica se a função roda
-    this.mainService.listarConcluidos().subscribe({
+    this.mainService.listarPorDataEConcluido(true, dataConvertida).subscribe({
       next: (data) => {
         console.log('Dados recebidos:', data); // ✅ verifica resposta do backend
         this.todos = data;
       },
-      error: (err) => console.error('Erro ao listar todos:', err)
+      error: (err) => console.error('Erro ao listar todos:', err),
     });
+  }
+
+  salvarTodo() {
+    this.mainService.criarTodo(this.novoTodo).subscribe({
+      next: (res) => {
+        console.log('Todo salvo com sucesso:', res);
+        this.ngOnInit()
+        this.fecharModal(); // fecha modal
+        this.novoTodo.descricao = ''; // limpa campo
+        this.novoTodo.concluido = false; // reseta status
+      },
+      error: (err) => {
+        console.error('Erro ao salvar todo:', err);
+      },
+    });
+  }
+
+  ngOnInit(): void {
+    this.listarEmAndamentoPorData(); // chama automaticamente ao iniciar
   }
 
   abrirModal() {
@@ -63,24 +103,4 @@ export class MainComponent implements OnInit {
   fecharModal() {
     this.mostrarModal = false;
   }
-
-  salvarTodo() {
-    this.mainService.criarTodo(this.novoTodo).subscribe({
-      next: (res) => {
-        console.log("Todo salvo com sucesso:", res);
-        this.listarTodos(); // recarrega lista
-        this.fecharModal(); // fecha modal
-        this.novoTodo.descricao = ""; // limpa campo
-        this.novoTodo.concluido = false; // reseta status
-      },
-      error: (err) => {
-        console.error("Erro ao salvar todo:", err);
-      }
-    });
-  }
-
-  ngOnInit(): void {
-    this.listarEmAndamento(); // chama automaticamente ao iniciar
-  }
-
 }

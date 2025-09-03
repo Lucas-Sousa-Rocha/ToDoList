@@ -35,22 +35,12 @@ public class ToDoService {
         toDoRepository.save(novoToDo);
     }
 
-    //LISTAR TODOS OS ToDoS
-    public List<ToDo> listarTodos() {
-        return toDoRepository.findAll();
-    }
-
-    public List<ToDo> listarEmAndamento(){
-        return toDoRepository.findByConcluidoFalse();
-    }
-
-    public List<ToDo> listarConcluidos(){
-        return toDoRepository.findByConcluidoTrue();
-    }
-
-
     public List<ToDo> listarPorDataEConcluido(LocalDate data, boolean concluido){
-        return toDoRepository.findByDataConclusaoAndConcluido(data, concluido);
+        return toDoRepository.findByDataCriacaoAndConcluido(data, concluido);
+    }
+
+    public List<ToDo> listarPorData(LocalDate data){
+        return toDoRepository.findByDataCriacao(data);
     }
 
     //EXCLUIR TO DO POR ID

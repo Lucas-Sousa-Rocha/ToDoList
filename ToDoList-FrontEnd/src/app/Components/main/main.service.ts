@@ -5,28 +5,39 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MainService {
-
   private API_PATH = environment.API_PATH;
 
-  constructor(private httpclient: HttpClient) { }
+  constructor(private httpclient: HttpClient) {}
 
-  listarTodos(): Observable<Todo[]> {
-    return this.httpclient.get<Todo[]>(`${this.API_PATH}todo`);
+  listarPorDataEConcluido(concluido: boolean,dataCriacao: Date): Observable<Todo[]> {
+    const dataFormatada = dataCriacao.toISOString().split('T')[0];
+    return this.httpclient.get<Todo[]>(
+      `${this.API_PATH}todo/data-e-concluido`,
+      {
+        params: {
+          data: dataFormatada,
+          concluido: concluido.toString(),
+        },
+      }
+    );
   }
 
-  listarEmAndamento(): Observable<Todo[]> {
-    return this.httpclient.get<Todo[]>(`${this.API_PATH}todo/em-andamento`);
-  }
-
-  listarConcluidos(): Observable<Todo[]> {
-    return this.httpclient.get<Todo[]>(`${this.API_PATH}todo/concluidos`);
+    listarTodosPorData(dataCriacao: Date): Observable<Todo[]> {
+    const dataFormatada = dataCriacao.toISOString().split('T')[0];
+    return this.httpclient.get<Todo[]>(
+      `${this.API_PATH}todo/listar-por-data`,
+      {
+        params: {
+          data: dataFormatada
+        },
+      }
+    );
   }
 
   criarTodo(todo: any): Observable<Todo> {
     return this.httpclient.post<Todo>(`${this.API_PATH}todo`, todo);
-}
-
+  }
 }

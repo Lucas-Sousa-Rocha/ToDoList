@@ -1,6 +1,7 @@
 export interface Todo {
-  id: number;
+  id?: number;
   descricao: string;
   concluido: boolean;
   dataCriacao: Date;
+  dataConclusao: Date;
 }
