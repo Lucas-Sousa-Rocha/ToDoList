@@ -70,7 +70,8 @@ export class MainComponent implements OnInit {
         console.log("Todo salvo com sucesso:", res);
         this.listarTodos(); // recarrega lista
         this.fecharModal(); // fecha modal
-        this.novaDescricao = ""; // limpa campo
+        this.novoTodo.descricao = ""; // limpa campo
+        this.novoTodo.concluido = false; // reseta status
       },
       error: (err) => {
         console.error("Erro ao salvar todo:", err);
