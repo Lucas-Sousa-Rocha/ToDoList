@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 })
 export class MainService {
 
-  private API_PATH = environment.API_PATH; // ex: 'http://localhost:8080/api/'
+  private API_PATH = environment.API_PATH;
 
   constructor(private httpclient: HttpClient) { }
 
@@ -20,4 +20,13 @@ export class MainService {
   listarEmAndamento(): Observable<Todo[]> {
     return this.httpclient.get<Todo[]>(`${this.API_PATH}todo/em-andamento`);
   }
+
+  listarConcluidos(): Observable<Todo[]> {
+    return this.httpclient.get<Todo[]>(`${this.API_PATH}todo/concluidos`);
+  }
+  
+  criarTodo(todo: any): Observable<Todo> {
+  return this.httpclient.post<Todo>(`${this.API_PATH}todo`, todo);
+}
+
 }

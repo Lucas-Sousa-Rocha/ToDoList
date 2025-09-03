@@ -12,4 +12,6 @@ public interface ToDoRepository extends JpaRepository<ToDo,Long> {
 
 
     List<ToDo> findByConcluidoFalse();
+
+    List<ToDo> findByConcluidoTrue();
 }

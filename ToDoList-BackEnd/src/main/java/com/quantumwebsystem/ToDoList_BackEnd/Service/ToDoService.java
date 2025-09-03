@@ -23,10 +23,11 @@ public class ToDoService {
     }
 
     // METODO SALVAR
-    public void salvar(ToDo novoToDo){
+    public ToDo salvar(ToDo novoToDo){
         toDoValidator.validar(novoToDo);
         novoToDo.setDataCriacao(LocalDate.now());
         toDoRepository.save(novoToDo);
+        return novoToDo;
     }
 
     //METODO EDITAR
@@ -41,6 +42,10 @@ public class ToDoService {
 
     public List<ToDo> listarEmAndamento(){
         return toDoRepository.findByConcluidoFalse();
+    }
+
+    public List<ToDo> listarConcluidos(){
+        return toDoRepository.findByConcluidoTrue();
     }
 
     //EXCLUIR TO DO POR ID

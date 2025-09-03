@@ -3,6 +3,7 @@ package com.quantumwebsystem.ToDoList_BackEnd.Controller;
 import com.quantumwebsystem.ToDoList_BackEnd.Model.ToDo;
 import com.quantumwebsystem.ToDoList_BackEnd.Service.ToDoService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("todo")
-@CrossOrigin(origins = "http://localhost:4200/")
+@CrossOrigin(origins = "http://localhost:4200/", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class ToDoController {
 
     private final ToDoService toDoService;
@@ -20,16 +21,28 @@ public class ToDoController {
         this.toDoService = toDoService;
     }
 
+//    @PostMapping
+//    public String salvarToDo(@RequestBody ToDo novoToDo) {
+//        try {
+//            this.toDoService.salvar(novoToDo);
+//            return "Cadastro ToDo realizado com sucesso!! " + novoToDo.getDescricao();
+//        }catch (IllegalArgumentException e) {
+//            var msgErro = e.getMessage();
+//            throw new ResponseStatusException(HttpStatus.CONFLICT, msgErro);
+//        }
+//    }
+
     @PostMapping
-    public String salvarToDo(@RequestBody ToDo novoToDo) {
+    public ResponseEntity<ToDo> salvarToDo(@RequestBody ToDo novoToDo) {
         try {
-            this.toDoService.salvar(novoToDo);
-            return "Cadastro ToDo realizado com sucesso!! " + novoToDo.getDescricao();
-        }catch (IllegalArgumentException e) {
-            var msgErro = e.getMessage();
+            ToDo todoSalvo = this.toDoService.salvar(novoToDo); // retorna o ToDo salvo
+            return ResponseEntity.ok(todoSalvo); // envia o objeto como JSON
+        } catch (IllegalArgumentException e) {
+            String msgErro = e.getMessage();
             throw new ResponseStatusException(HttpStatus.CONFLICT, msgErro);
         }
     }
+
 
     @PutMapping("{id}")
     public void atualizarStatus(@PathVariable long id, @RequestBody ToDo novoToDo) {
@@ -45,6 +58,11 @@ public class ToDoController {
     @GetMapping("em-andamento")
     public List<ToDo> listarEmAndamento(){
         return toDoService.listarEmAndamento();
+    }
+
+    @GetMapping("concluidos")
+    public List<ToDo> listarConcluidos(){
+        return toDoService.listarConcluidos();
     }
 
     @DeleteMapping("{id}")
