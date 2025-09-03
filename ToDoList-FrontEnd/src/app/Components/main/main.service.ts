@@ -24,9 +24,9 @@ export class MainService {
   listarConcluidos(): Observable<Todo[]> {
     return this.httpclient.get<Todo[]>(`${this.API_PATH}todo/concluidos`);
   }
-  
+
   criarTodo(todo: any): Observable<Todo> {
-  return this.httpclient.post<Todo>(`${this.API_PATH}todo`, todo);
+    return this.httpclient.post<Todo>(`${this.API_PATH}todo`, todo);
 }
 
 }

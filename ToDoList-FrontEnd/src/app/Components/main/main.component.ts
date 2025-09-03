@@ -12,7 +12,6 @@ import { FormsModule } from '@angular/forms';
 })
 export class MainComponent implements OnInit {
 
-
   mostrarModal: boolean = false;
 
   constructor(private mainService: MainService) { }
@@ -23,7 +22,6 @@ export class MainComponent implements OnInit {
   descricao: this.novaDescricao,
   concluido: false // por padrão começa como não concluído
   };
-
 
   listarTodos() {
     console.log('listarTodos chamado'); // ✅ verifica se a função roda
@@ -67,8 +65,6 @@ export class MainComponent implements OnInit {
   }
 
   salvarTodo() {
-
-
     this.mainService.criarTodo(this.novoTodo).subscribe({
       next: (res) => {
         console.log("Todo salvo com sucesso:", res);
@@ -85,4 +81,5 @@ export class MainComponent implements OnInit {
   ngOnInit(): void {
     this.listarEmAndamento(); // chama automaticamente ao iniciar
   }
+
 }

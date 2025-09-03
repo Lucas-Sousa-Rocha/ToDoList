@@ -21,17 +21,6 @@ public class ToDoController {
         this.toDoService = toDoService;
     }
 
-//    @PostMapping
-//    public String salvarToDo(@RequestBody ToDo novoToDo) {
-//        try {
-//            this.toDoService.salvar(novoToDo);
-//            return "Cadastro ToDo realizado com sucesso!! " + novoToDo.getDescricao();
-//        }catch (IllegalArgumentException e) {
-//            var msgErro = e.getMessage();
-//            throw new ResponseStatusException(HttpStatus.CONFLICT, msgErro);
-//        }
-//    }
-
     @PostMapping
     public ResponseEntity<ToDo> salvarToDo(@RequestBody ToDo novoToDo) {
         try {
