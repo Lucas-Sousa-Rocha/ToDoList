@@ -12,7 +12,10 @@ export class MainService {
 
   constructor(private httpclient: HttpClient) {}
 
-  listarPorDataEConcluido(concluido: boolean,dataCriacao: Date): Observable<Todo[]> {
+  listarPorDataEConcluido(
+    concluido: boolean,
+    dataCriacao: Date
+  ): Observable<Todo[]> {
     const dataFormatada = dataCriacao.toISOString().split('T')[0];
     return this.httpclient.get<Todo[]>(
       `${this.API_PATH}todo/data-e-concluido`,
@@ -25,19 +28,22 @@ export class MainService {
     );
   }
 
-    listarTodosPorData(dataCriacao: Date): Observable<Todo[]> {
+  listarTodosPorData(dataCriacao: Date): Observable<Todo[]> {
     const dataFormatada = dataCriacao.toISOString().split('T')[0];
-    return this.httpclient.get<Todo[]>(
-      `${this.API_PATH}todo/listar-por-data`,
-      {
-        params: {
-          data: dataFormatada
-        },
-      }
-    );
+    return this.httpclient.get<Todo[]>(`${this.API_PATH}todo/listar-por-data`, {
+      params: {
+        data: dataFormatada,
+      },
+    });
   }
 
   criarTodo(todo: any): Observable<Todo> {
     return this.httpclient.post<Todo>(`${this.API_PATH}todo`, todo);
+  }
+
+  excluirToDo(id: number): Observable<{ mensagem: string; todo: Todo }> {
+    return this.httpclient.delete<{ mensagem: string; todo: Todo }>(
+      `${this.API_PATH}todo/${id}`
+    );
   }
 }

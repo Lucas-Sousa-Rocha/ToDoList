@@ -8,12 +8,12 @@
   </div>
   <div>
     <h2>Lista de Tarefas</h2>
-    <ul *ngFor="let t of todos; let i = index">
+    <ul *ngFor="let t of todos">
       <li hidden>{{ t.id }}</li>
       <li>{{ t.descricao }}</li>
       <li>{{ t.concluido ? 'Concluido' : 'Em andamento' }}</li>
       <li>{{ t.dataCriacao }}</li>
-      <li><button>Excluir</button></li>
+      <li><button (click)="excluirToDo(t.id)">Excluir</button></li>
       <li><button>Concluir</button></li>
     </ul>
   </div>

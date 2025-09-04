@@ -13,7 +13,7 @@ import { FormsModule } from '@angular/forms';
 export class MainComponent implements OnInit {
   mostrarModal: boolean = false;
 
-  dataFiltro: string = new Date().toISOString().split('T')[0]; 
+  dataFiltro: string = new Date().toISOString().split('T')[0];
 
   constructor(private mainService: MainService) {}
 
@@ -21,9 +21,9 @@ export class MainComponent implements OnInit {
   novaDescricao: string = '';
   novoTodo = {
     descricao: this.novaDescricao,
-    concluido: false, 
+    concluido: false,
   };
-  
+
   listarEmAndamentoPorData() {
     if (!this.dataFiltro) {
       console.warn('Selecione uma data!');
@@ -35,8 +35,8 @@ export class MainComponent implements OnInit {
     console.log('listarTodos chamado'); // ✅ verifica se a função roda
     this.mainService.listarPorDataEConcluido(false, dataConvertida).subscribe({
       next: (data) => {
-        console.log('Dados recebidos:', data ); // ✅ verifica resposta do backend
-        console.log("Listar Em Andamento Por Data")
+        console.log('Dados recebidos:', data); // ✅ verifica resposta do backend
+        console.log('Listar Em Andamento Por Data');
         this.todos = data;
       },
       error: (err) => console.error('Erro ao listar todos:', err),
@@ -53,7 +53,7 @@ export class MainComponent implements OnInit {
     console.log('listarTodos chamado'); // ✅ verifica se a função roda
     this.mainService.listarTodosPorData(dataConvertida).subscribe({
       next: (data) => {
-        console.log('Dados recebidos:', data ); // ✅ verifica resposta do backend
+        console.log('Dados recebidos:', data); // ✅ verifica resposta do backend
         this.todos = data;
       },
       error: (err) => console.error('Erro ao listar todos:', err),
@@ -81,7 +81,7 @@ export class MainComponent implements OnInit {
     this.mainService.criarTodo(this.novoTodo).subscribe({
       next: (res) => {
         console.log('Todo salvo com sucesso:', res);
-        this.ngOnInit()
+        this.ngOnInit();
         this.fecharModal(); // fecha modal
         this.novoTodo.descricao = ''; // limpa campo
         this.novoTodo.concluido = false; // reseta status
@@ -90,6 +90,19 @@ export class MainComponent implements OnInit {
         console.error('Erro ao salvar todo:', err);
       },
     });
+  }
+
+  excluirToDo(id: number): void {
+    if (!id) return;
+    if (confirm('Tem certeza que deseja excluir este ToDo?')) {
+      this.mainService.excluirToDo(id).subscribe({
+        next: (res) => {
+          alert(res.mensagem);
+          this.todos = this.todos.filter((todo) => todo.id !== id);
+        },
+        error: (err) => console.error('Erro ao excluir:', err),
+      });
+    }
   }
 
   ngOnInit(): void {
