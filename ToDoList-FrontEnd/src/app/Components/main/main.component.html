@@ -3,59 +3,62 @@
     <button (click)="listarEmAndamentoPorData()">Em Andamento</button>
     <button (click)="listarConcluidosPorData()">Concluidos</button>
     <button (click)="listarTodosPorData()">Todas As Tarefas</button>
-    <button (click)="abrirModal()" class="btn-criar">Criar Nova Tarefa</button>
+    <button (click)="abrirModal()" class="btn-criar">+</button>
     <input type="date" [(ngModel)]="dataFiltro" name="dataFiltro" required>
   </div>
   <div>
     <h2>Lista de Tarefas</h2>
-    <ul *ngFor="let t of todos">
-      <li hidden>{{ t.id }}</li>
-      <li>{{ t.descricao }}</li>
-      <li>{{ t.concluido ? 'Concluido' : 'Em andamento' }}</li>
-      <li>{{ t.dataCriacao }}</li>
-      <li><button (click)="excluirToDo(t.id)">Excluir</button></li>
-      <li><button>Concluir</button></li>
+    <ul>
+      <ng-container *ngFor="let t of todos">
+        <li *ngIf="t">
+          <div>ID: {{ t.id }}</div>
+          <div>Descrição: {{ t.descricao }}</div>
+          <div>Status: {{ t.concluido ? 'Concluído' : 'Em andamento' }}</div>
+          <div>Data Criação: {{ t.dataCriacao | date:'dd/MM/yyyy'}}</div>
+          <div *ngIf="t.dataConclusao"> Data Conclusão: {{ t.dataConclusao | date:'dd/MM/yyyy' }}</div>
+          <div>
+            <button (click)="excluirToDo(t.id)" title="Excluir tarefa">🗑️</button>
+            <button (click)="marcarConcluido(t)" *ngIf="!t.concluido" title="Marcar como concluído">
+             ✅
+            </button>
+          </div>
+        </li>
+      </ng-container>
     </ul>
   </div>
 
   <!-- Modal -->
-<div class="modal" [class.show]="mostrarModal">
-  <div class="modal-content">
-    <span class="close" (click)="fecharModal()">&times;</span>
-    <h2>Cadastrar Novo Todo</h2>
+  <div class="modal" [class.show]="mostrarModal">
+    <div class="modal-content">
+      <span class="close" (click)="fecharModal()">&times;</span>
+      <h2>Cadastrar Novo Todo</h2>
 
-    <form (ngSubmit)="salvarTodo()" #todoForm="ngForm">
-      
-      <!-- Descrição -->
-      <div class="form-group">
-        <label for="descricao">Descrição</label>
-        <input 
-          type="text" 
-          id="descricao" 
-          [(ngModel)]="novoTodo.descricao" 
-          name="descricao" 
-          required 
-          placeholder="Digite a tarefa"
-        />
-      </div>
+      <form (ngSubmit)="salvarTodo()" #todoForm="ngForm">
 
-      <!-- Status -->
-      <div class="form-group">
-        <label for="status">Status</label>
-        <select id="status" [(ngModel)]="novoTodo.concluido" name="concluido">
-          <option [ngValue]="false">Em andamento</option>
-          <option [ngValue]="true">Concluído</option>
-        </select>
-      </div>
+        <!-- Descrição -->
+        <div class="form-group">
+          <label for="descricao">Descrição</label>
+          <input type="text" id="descricao" [(ngModel)]="novoTodo.descricao" name="descricao" required
+            placeholder="Digite a tarefa" />
+        </div>
 
-      <!-- Botões -->
-      <div class="modal-actions">
-        <button type="submit" [disabled]="!todoForm.form.valid" class="btn-salvar">Salvar</button>
-        <button type="button" class="btn-cancelar" (click)="fecharModal()">Cancelar</button>
-      </div>
+        <!-- Status -->
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select id="status" [(ngModel)]="novoTodo.concluido" name="concluido">
+            <option [ngValue]="false">Em andamento</option>
+            <option [ngValue]="true">Concluído</option>
+          </select>
+        </div>
 
-    </form>
+        <!-- Botões -->
+        <div class="modal-actions">
+          <button type="submit" [disabled]="!todoForm.form.valid" class="btn-salvar">Salvar</button>
+          <button type="button" class="btn-cancelar" (click)="fecharModal()">Cancelar</button>
+        </div>
+
+      </form>
+    </div>
   </div>
-</div>
-  
+
 </main>

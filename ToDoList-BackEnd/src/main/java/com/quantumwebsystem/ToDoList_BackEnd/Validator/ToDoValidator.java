@@ -13,7 +13,7 @@ public class ToDoValidator {
     }
 
     public void validar(ToDo novoToDo){
-        if (validaDescricao(novoToDo.getDescricao())){
+        if (validaDescricao(novoToDo.getDescricao() )){
             throw new IllegalArgumentException("Já existe um To Do Com Essa Descrição Cadastrado");
         }
     }

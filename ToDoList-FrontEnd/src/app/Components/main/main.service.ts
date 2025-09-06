@@ -10,12 +10,9 @@ import { environment } from '../../environments/environment';
 export class MainService {
   private API_PATH = environment.API_PATH;
 
-  constructor(private httpclient: HttpClient) {}
+  constructor(private httpclient: HttpClient) { }
 
-  listarPorDataEConcluido(
-    concluido: boolean,
-    dataCriacao: Date
-  ): Observable<Todo[]> {
+  listarPorDataEConcluido(concluido: boolean, dataCriacao: Date): Observable<Todo[]> {
     const dataFormatada = dataCriacao.toISOString().split('T')[0];
     return this.httpclient.get<Todo[]>(
       `${this.API_PATH}todo/data-e-concluido`,
@@ -46,4 +43,9 @@ export class MainService {
       `${this.API_PATH}todo/${id}`
     );
   }
+
+  atualizarToDo(id: number, todo: Todo): Observable<Todo> {
+    return this.httpclient.put<Todo>(`${this.API_PATH}todo/${id}`, todo);
+  }
+
 }

@@ -34,10 +34,12 @@ public class ToDoController {
     }
 
     @PutMapping("{id}")
-    public void atualizarStatus(@PathVariable long id, @RequestBody ToDo novoToDo) {
+    public ToDo atualizarStatus(@PathVariable long id, @RequestBody ToDo novoToDo) {
         novoToDo.setId(id);
-        this.toDoService.atualizarStatus(novoToDo);
+        System.out.println(novoToDo);
+        return this.toDoService.atualizarStatus(novoToDo);
     }
+
 
     @GetMapping("data-e-concluido")
     public List<ToDo> listarPorDataEConluido(@RequestParam(required = false) LocalDate data, @RequestParam(required = false) boolean concluido){

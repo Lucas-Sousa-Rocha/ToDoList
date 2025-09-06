@@ -3,6 +3,7 @@ package com.quantumwebsystem.ToDoList_BackEnd.Service;
 import com.quantumwebsystem.ToDoList_BackEnd.Model.ToDo;
 import com.quantumwebsystem.ToDoList_BackEnd.Repository.ToDoRepository;
 import com.quantumwebsystem.ToDoList_BackEnd.Validator.ToDoValidator;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,9 +32,19 @@ public class ToDoService {
     }
 
     //METODO EDITAR
-    public void atualizarStatus(ToDo novoToDo){
-        toDoRepository.save(novoToDo);
+    @Transactional
+    public ToDo atualizarStatus(ToDo novoToDo){
+        Optional<ToDo> existente = toDoRepository.findById(novoToDo.getId());
+        if (existente.isPresent()) {
+            ToDo t = existente.get();
+            t.setConcluido(true); // atualiza o status
+            t.setDataConclusao(LocalDate.now()); // define a data de conclusão
+            return toDoRepository.save(t); // persiste as mudanças
+        } else {
+            throw new IllegalArgumentException("ToDo não encontrado com id: " + novoToDo.getId());
+        }
     }
+
 
     public List<ToDo> listarPorDataEConcluido(LocalDate data, boolean concluido){
         return toDoRepository.findByDataCriacaoAndConcluido(data, concluido);

@@ -11,13 +11,35 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './main.component.css',
 })
 export class MainComponent implements OnInit {
+
   mostrarModal: boolean = false;
 
-  dataFiltro: string = new Date().toISOString().split('T')[0];
+  ngOnInit(): void {
+    this.listarEmAndamentoPorData(); // chama automaticamente ao iniciar
+  }
 
-  constructor(private mainService: MainService) {}
+  abrirModal() {
+    this.mostrarModal = true;
+  }
+
+  fecharModal() {
+    this.mostrarModal = false;
+  }
+
+  // componente.ts
+  dataFiltro: string ;
+  
+  constructor(private mainService: MainService) { 
+    const hoje = new Date();
+    const ano = hoje.getFullYear();
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    // monta no formato YYYY-MM-DD (aceito pelo input date)
+    this.dataFiltro = `${ano}-${mes}-${dia}`;
+  }
 
   todos: Todo[] = [];
+
   novaDescricao: string = '';
   novoTodo = {
     descricao: this.novaDescricao,
@@ -29,7 +51,7 @@ export class MainComponent implements OnInit {
       console.warn('Selecione uma data!');
       return;
     }
-    // converte string para Date
+
     const dataConvertida = new Date(this.dataFiltro);
 
     console.log('listarTodos chamado'); // ✅ verifica se a função roda
@@ -105,15 +127,24 @@ export class MainComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    this.listarEmAndamentoPorData(); // chama automaticamente ao iniciar
+  marcarConcluido(todo: Todo): void {
+    this.mainService.atualizarToDo(todo.id, todo).subscribe({
+      next: (todoAtualizado: Todo) => {
+        // atualiza o item na lista com os dados que vieram do backend
+        const index = this.todos.findIndex(t => t.id === todo.id);
+        if (index !== -1) {
+          this.todos[index] = todoAtualizado; // substitui o item antigo
+        }
+        console.log('Status atualizado com sucesso');
+        this.ngOnInit(); // atualiza a lista
+      },
+      error: err => {
+        console.error('Erro ao atualizar status', err);
+      }
+    });
   }
 
-  abrirModal() {
-    this.mostrarModal = true;
-  }
 
-  fecharModal() {
-    this.mostrarModal = false;
-  }
+
+
 }
