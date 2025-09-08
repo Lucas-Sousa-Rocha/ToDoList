@@ -15,10 +15,20 @@
           <div>Descrição: {{ t.descricao }}</div>
           <div>Status: {{ t.concluido ? "Concluído" : "Em andamento" }}</div>
           <div>Data Criação: {{ t.dataCriacao | date : "dd/MM/yyyy" }}</div>
-          <div *ngIf="t.dataConclusao">Data Conclusão: {{ t.dataConclusao | date : "dd/MM/yyyy" }}</div>
+          <div *ngIf="t.dataConclusao">
+            Data Conclusão: {{ t.dataConclusao | date : "dd/MM/yyyy" }}
+          </div>
           <div>
-            <button (click)="excluirToDo(t.id)" title="Excluir tarefa">🗑️</button>
-            <button (click)="marcarConcluido(t)" *ngIf="!t.concluido" title="Marcar como concluído" >✅</button>
+            <button (click)="excluirToDo(t.id)" title="Excluir tarefa">
+              🗑️
+            </button>
+            <button
+              (click)="marcarConcluido(t)"
+              *ngIf="!t.concluido"
+              title="Marcar como concluído"
+            >
+              ✅
+            </button>
           </div>
         </li>
       </ng-container>
@@ -55,9 +65,20 @@
           <!-- Data de criação -->
           <div class="form-group">
             <label for="dataCriacao">Data:</label>
-            <input type="date" [(ngModel)]="novoToDo.dataCriacao" name="dataCriacao" [value]="dataFiltro" required />
-            
+            <input
+              type="date"
+              [(ngModel)]="novoToDo.dataCriacao"
+              name="dataCriacao"
+              [value]="dataFiltro"
+              required
+            />
           </div>
+        </div>
+
+        <!-- Popup -->
+        <div *ngIf="popupMensagem" class="popup">
+          {{ popupMensagem }}
+          <button class="fechar" (click)="fecharPopup()">x</button>
         </div>
 
         <!-- Botões -->

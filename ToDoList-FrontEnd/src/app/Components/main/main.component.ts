@@ -11,7 +11,29 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './main.component.css',
 })
 export class MainComponent implements OnInit {
+  constructor(private mainService: MainService) {
+    const hoje = new Date();
+    const ano = hoje.getFullYear();
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    this.dataFiltro = `${ano}-${mes}-${dia}`;
+    this.novoToDo = {
+      descricao: '',
+      concluido: false,
+      dataCriacao: this.dataFiltro,
+      dataConclusao: null,
+    };
+  }
+
   mostrarModal: boolean = false;
+
+  popupMensagem: string | null = null;
+
+  dataFiltro: string;
+
+  novoToDo: any;
+
+  todos: Todo[] = [];
 
   ngOnInit(): void {
     this.listarEmAndamentoPorData(); // chama automaticamente ao iniciar
@@ -25,50 +47,33 @@ export class MainComponent implements OnInit {
     this.mostrarModal = false;
   }
 
-  // componente.ts
-  dataFiltro: string;
-  novoToDo: any;
+  mostrarPopup(mensagem: string, tipo: 'sucesso' | 'erro') {
+    this.popupMensagem = mensagem;
 
-  constructor(private mainService: MainService) {
-    const hoje = new Date();
-    const ano = hoje.getFullYear();
-    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-    const dia = String(hoje.getDate()).padStart(2, '0');
-    // monta no formato YYYY-MM-DD (aceito pelo input date)
-    this.dataFiltro = `${ano}-${mes}-${dia}`;
+    // muda a cor do popup de acordo com o tipo
+    const popupDiv = document.querySelector('.popup') as HTMLElement;
+    if (popupDiv) {
+      popupDiv.style.backgroundColor =
+        tipo === 'sucesso' ? '#d4edda' : '#f8d7da';
+      popupDiv.style.color = tipo === 'sucesso' ? '#155724' : '#721c24';
+    }
 
-    this.novoToDo = {
-    descricao: '',
-    concluido: false,
-    dataCriacao: this.dataFiltro,
-    dataConclusao: null,
-  };
-  
+    // desaparece automaticamente após 3 segundos
+    setTimeout(() => (this.popupMensagem = null), 5000);
   }
 
-  todos: Todo[] = [];
-
-  /*novaDescricao: string = '';
-  novoTodo = {
-    descricao: this.novaDescricao,
-    concluido: false,
-  };*/
-
-  
+  fecharPopup() {
+    this.popupMensagem = null;
+  }
 
   listarEmAndamentoPorData() {
     if (!this.dataFiltro) {
       console.warn('Selecione uma data!');
       return;
     }
-
     const dataConvertida = new Date(this.dataFiltro);
-
-    console.log('listarTodos chamado'); // ✅ verifica se a função roda
     this.mainService.listarPorDataEConcluido(false, dataConvertida).subscribe({
       next: (data) => {
-        console.log('Dados recebidos:', data); // ✅ verifica resposta do backend
-        console.log('Listar Em Andamento Por Data');
         this.todos = data;
       },
       error: (err) => console.error('Erro ao listar todos:', err),
@@ -76,19 +81,11 @@ export class MainComponent implements OnInit {
   }
 
   listarTodosPorData() {
-    if (!this.dataFiltro) {
-      console.warn('Selecione uma data!');
-      return;
-    }
-    // converte string para Date
     const dataConvertida = new Date(this.dataFiltro);
-    console.log('listarTodos chamado'); // ✅ verifica se a função roda
     this.mainService.listarTodosPorData(dataConvertida).subscribe({
       next: (data) => {
-        console.log('Dados recebidos:', data); // ✅ verifica resposta do backend
         this.todos = data;
       },
-      error: (err) => console.error('Erro ao listar todos:', err),
     });
   }
 
@@ -97,12 +94,9 @@ export class MainComponent implements OnInit {
       console.warn('Selecione uma data!');
       return;
     }
-    // converte string para Date
     const dataConvertida = new Date(this.dataFiltro);
-    console.log('listarTodos chamado'); // ✅ verifica se a função roda
     this.mainService.listarPorDataEConcluido(true, dataConvertida).subscribe({
       next: (data) => {
-        console.log('Dados recebidos:', data); // ✅ verifica resposta do backend
         this.todos = data;
       },
       error: (err) => console.error('Erro ao listar todos:', err),
@@ -112,15 +106,20 @@ export class MainComponent implements OnInit {
   salvarTodo() {
     this.mainService.criarTodo(this.novoToDo).subscribe({
       next: (res) => {
-        console.log('Todo salvo com sucesso:', res);
         this.ngOnInit();
         this.fecharModal(); // fecha modal
         this.novoToDo.descricao = ''; // limpa campo
         this.novoToDo.concluido = false; // reseta status
       },
       error: (err) => {
-        console.error('Erro ao salvar todo:', err);
-        console.log(this.novoToDo)
+        if (err.status === 409) {
+          this.mostrarPopup(
+            'Já existe um ToDo com essa descrição nesta data!',
+            'erro'
+          );
+        } else {
+          this.mostrarPopup('Erro ao salvar todo. Tente novamente.', 'erro');
+        }
       },
     });
   }

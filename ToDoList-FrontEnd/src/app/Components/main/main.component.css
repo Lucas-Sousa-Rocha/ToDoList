@@ -57,12 +57,32 @@
   margin-top: 10px;
 }
 
-.btn-salvar:hover {
-  background: #1e7e34;
-}
 
 form {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
+
+
+.popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #f8d7da; /* vermelho claro para erro */
+  color: #721c24;
+  padding: 15px 20px;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+.popup .fechar {
+  background: transparent;
+  border: none;
+  font-weight: bold;
+  float: right;
+  cursor: pointer;
+}
+
