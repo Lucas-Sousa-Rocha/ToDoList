@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface ToDoRepository extends JpaRepository<ToDo,Long> {
 
-    boolean existsByDescricao(String descricao);
+    boolean existsByDescricaoAndDataCriacao(String descricao, LocalDate dataCriacao);
 
     List<ToDo> findByDataCriacaoAndConcluido(LocalDate dataCriacao, Boolean concluido);
 

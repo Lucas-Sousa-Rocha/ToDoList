@@ -26,7 +26,6 @@ public class ToDoService {
     // METODO SALVAR
     public ToDo salvar(ToDo novoToDo){
         toDoValidator.validar(novoToDo);
-        novoToDo.setDataCriacao(LocalDate.now());
         toDoRepository.save(novoToDo);
         return novoToDo;
     }

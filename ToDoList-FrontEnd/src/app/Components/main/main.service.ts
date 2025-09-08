@@ -34,7 +34,7 @@ export class MainService {
     });
   }
 
-  criarTodo(todo: any): Observable<Todo> {
+  criarTodo(todo: Todo): Observable<Todo> {
     return this.httpclient.post<Todo>(`${this.API_PATH}todo`, todo);
   }
 

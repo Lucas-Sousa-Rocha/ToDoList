@@ -11,7 +11,6 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './main.component.css',
 })
 export class MainComponent implements OnInit {
-
   mostrarModal: boolean = false;
 
   ngOnInit(): void {
@@ -27,24 +26,35 @@ export class MainComponent implements OnInit {
   }
 
   // componente.ts
-  dataFiltro: string ;
-  
-  constructor(private mainService: MainService) { 
+  dataFiltro: string;
+  novoToDo: any;
+
+  constructor(private mainService: MainService) {
     const hoje = new Date();
     const ano = hoje.getFullYear();
     const mes = String(hoje.getMonth() + 1).padStart(2, '0');
     const dia = String(hoje.getDate()).padStart(2, '0');
     // monta no formato YYYY-MM-DD (aceito pelo input date)
     this.dataFiltro = `${ano}-${mes}-${dia}`;
+
+    this.novoToDo = {
+    descricao: '',
+    concluido: false,
+    dataCriacao: this.dataFiltro,
+    dataConclusao: null,
+  };
+  
   }
 
   todos: Todo[] = [];
 
-  novaDescricao: string = '';
+  /*novaDescricao: string = '';
   novoTodo = {
     descricao: this.novaDescricao,
     concluido: false,
-  };
+  };*/
+
+  
 
   listarEmAndamentoPorData() {
     if (!this.dataFiltro) {
@@ -100,16 +110,17 @@ export class MainComponent implements OnInit {
   }
 
   salvarTodo() {
-    this.mainService.criarTodo(this.novoTodo).subscribe({
+    this.mainService.criarTodo(this.novoToDo).subscribe({
       next: (res) => {
         console.log('Todo salvo com sucesso:', res);
         this.ngOnInit();
         this.fecharModal(); // fecha modal
-        this.novoTodo.descricao = ''; // limpa campo
-        this.novoTodo.concluido = false; // reseta status
+        this.novoToDo.descricao = ''; // limpa campo
+        this.novoToDo.concluido = false; // reseta status
       },
       error: (err) => {
         console.error('Erro ao salvar todo:', err);
+        console.log(this.novoToDo)
       },
     });
   }
@@ -131,20 +142,16 @@ export class MainComponent implements OnInit {
     this.mainService.atualizarToDo(todo.id, todo).subscribe({
       next: (todoAtualizado: Todo) => {
         // atualiza o item na lista com os dados que vieram do backend
-        const index = this.todos.findIndex(t => t.id === todo.id);
+        const index = this.todos.findIndex((t) => t.id === todo.id);
         if (index !== -1) {
           this.todos[index] = todoAtualizado; // substitui o item antigo
         }
         console.log('Status atualizado com sucesso');
         this.ngOnInit(); // atualiza a lista
       },
-      error: err => {
+      error: (err) => {
         console.error('Erro ao atualizar status', err);
-      }
+      },
     });
   }
-
-
-
-
 }
