@@ -1,100 +1,151 @@
 <main>
-  <div>
-    <button (click)="listarEmAndamentoPorData()">Em Andamento</button>
-    <button (click)="listarConcluidosPorData()">Concluidos</button>
-    <button (click)="listarTodosPorData()">Todas As Tarefas</button>
-    <button (click)="abrirModal()" class="btn-criar">+</button>
-    <input type="date" [(ngModel)]="dataFiltro" name="dataFiltro" required />
+  <!-- =================== Filtros e botão criar =================== -->
+  <div class="filtros-container">
+    <!--
+    <p-button label="Em Andamento"[raised]="true"severity="secondary" class="filtro"
+    (click)="listarEmAndamentoPorData()"
+    ></p-button>
+
+    <p-button label="Concluidos"[raised]="true"severity="secondary" class="filtro"
+    (click)="listarConcluidosPorData()"
+    ></p-button>
+
+    <p-button label="Todas as Tarefas"[raised]="true"severity="secondary" class="filtro"
+    (click)="listarTodosPorData()"
+    ></p-button>
+    <button (click)="visible = true" class="btn-criar">+</button>
+    -->
+    <p-buttongroup>
+      <p-button
+        label="Em Andamento"
+        icon="pi pi-search"
+        (click)="listarEmAndamentoPorData()"
+      />
+      <p-button
+        label="Concluidos"
+        icon="pi pi-check"
+        (click)="listarConcluidosPorData()"
+      />
+      <p-button
+        label="Todas as Tarefas"
+        icon="pi pi-bars"
+        (click)="listarTodosPorData()"
+      />
+    </p-buttongroup>
+
+    <p-button (click)="visible = true" class="btn-criar" icon="pi pi-pencil" label="Criar"/>
+
+    <p-datepicker
+      [(ngModel)]="dataFiltro"
+      [showIcon]="true"
+      inputId="buttondisplay"
+      [showOnFocus]="false"
+      name="dataFiltro"
+      required
+      dateFormat="dd/mm/yy"
+    />
   </div>
-  <div>
-    <h2>Lista de Tarefas</h2>
-    <ul>
-      <ng-container *ngFor="let t of todos">
-        <li *ngIf="t">
-          <div hidden>ID: {{ t.id }}</div>
-          <div>Descrição: {{ t.descricao }}</div>
-          <div>Status: {{ t.concluido ? "Concluído" : "Em andamento" }}</div>
-          <div>Data Criação: {{ t.dataCriacao | date : "dd/MM/yyyy" }}</div>
-          <div *ngIf="t.dataConclusao">
+
+  <!-- =================== Cards centralizados =================== -->
+  <div class="cards-container">
+    <ng-container *ngFor="let t of todos">
+      <p-card *ngIf="t" class="todo-card">
+        <ng-template #title>
+          {{ t.descricao }}
+        </ng-template>
+
+        <ng-template #subtitle>
+          Status: {{ t.concluido ? "Concluído" : "Em andamento" }}
+        </ng-template>
+
+        <p>
+          Data Criação: {{ t.dataCriacao | date : "dd/MM/yyyy" }}<br />
+          <span *ngIf="t.dataConclusao">
             Data Conclusão: {{ t.dataConclusao | date : "dd/MM/yyyy" }}
-          </div>
-          <div>
-            <button (click)="excluirToDo(t.id)" title="Excluir tarefa">
-              🗑️
-            </button>
-            <button
+          </span>
+        </p>
+
+        <ng-template #footer>
+          <div class="footer-buttons">
+            <p-button
+              label="Excluir"
+              icon="pi pi-trash"
+              severity="danger"
+              (click)="excluirToDo(t.id)"
+            ></p-button>
+
+            <p-button
+              label="Concluir"
+              icon="pi pi-check"
+              severity="success"
               (click)="marcarConcluido(t)"
               *ngIf="!t.concluido"
-              title="Marcar como concluído"
-            >
-              ✅
-            </button>
+            ></p-button>
           </div>
-        </li>
-      </ng-container>
-    </ul>
+        </ng-template>
+      </p-card>
+    </ng-container>
   </div>
 
-  <!-- Modal -->
-  <div class="modal" [class.show]="mostrarModal">
-    <div class="modal-content">
-      <span class="close" (click)="fecharModal()">&times;</span>
-      <h2>Cadastrar Novo Todo</h2>
+  <!-- =================== Modal cadastrar todo =================== -->
+  <p-dialog
+    header="Cadastrar Novo Todo"
+    [(visible)]="visible"
+    [modal]="true"
+    [closable]="true"
+    [style]="{ width: '25rem', borderRadius: '12px', padding: '1rem' }"
+  >
+    <form (ngSubmit)="salvarTodo()" #todoForm="ngForm">
+      <div class="form-group">
+        <label for="descricao">Descrição</label>
+        <input
+          pInputText
+          id="descricao"
+          [(ngModel)]="novoToDo.descricao"
+          name="descricao"
+          placeholder="Digite a tarefa"
+          required
+        />
+      </div>
 
-      <form (ngSubmit)="salvarTodo()" #todoForm="ngForm">
-        <!-- Descrição -->
-        <div class="form-group">
-          <label for="descricao">Descrição:</label>
-          <input
-            type="text"
-            id="descricao"
-            [(ngModel)]="novoToDo.descricao"
-            name="descricao"
-            required
-            placeholder="Digite a tarefa"
-          />
-        </div>
+      <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" [(ngModel)]="novoToDo.concluido" name="concluido">
+          <option [ngValue]="false">Em andamento</option>
+          <option [ngValue]="true">Concluído</option>
+        </select>
+      </div>
 
-        <!-- Status -->
-        <div class="form-group">
-          <label for="status">Status:</label>
-          <select id="status" [(ngModel)]="novoToDo.concluido" name="concluido">
-            <option [ngValue]="false">Em andamento</option>
-            <option [ngValue]="true">Concluído</option>
-          </select>
-          <!-- Data de criação -->
-          <div class="form-group">
-            <label for="dataCriacao">Data:</label>
-            <input
-              type="date"
-              [(ngModel)]="novoToDo.dataCriacao"
-              name="dataCriacao"
-              [value]="dataFiltro"
-              required
-            />
-          </div>
-        </div>
+      <div class="form-group">
+        <label for="dataCriacao">Data</label>
+        <p-datepicker
+          [(ngModel)]="dataFiltro"
+          [showIcon]="true"
+          inputId="buttondisplay"
+          [showOnFocus]="false"
+          name="dataFiltro"
+          required
+          dateFormat="dd/mm/yy"
+        />
+      </div>
 
-        <!-- Popup -->
-        <div *ngIf="popupMensagem" class="popup">
-          {{ popupMensagem }}
-          <button class="fechar" (click)="fecharPopup()">x</button>
-        </div>
+      <div *ngIf="popupMensagem" class="popup">
+        {{ popupMensagem }}
+        <button type="button" class="fechar" (click)="fecharPopup()">x</button>
+      </div>
 
-        <!-- Botões -->
-        <div class="modal-actions">
-          <button
-            type="submit"
-            [disabled]="!todoForm.form.valid"
-            class="btn-salvar"
-          >
-            Salvar
-          </button>
-          <button type="button" class="btn-cancelar" (click)="fecharModal()">
-            Cancelar
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+      <div class="modal-actions">
+        <p-button
+          label="Cancelar"
+          severity="secondary"
+          (click)="visible = false"
+        ></p-button>
+        <p-button
+          label="Salvar"
+          type="submit"
+          [disabled]="!todoForm.form.valid"
+        ></p-button>
+      </div>
+    </form>
+  </p-dialog>
 </main>

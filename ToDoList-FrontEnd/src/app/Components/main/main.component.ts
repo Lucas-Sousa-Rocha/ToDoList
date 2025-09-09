@@ -3,20 +3,44 @@ import { MainService } from './main.service';
 import { Todo } from './todo';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DatePickerModule } from 'primeng/datepicker';
+import { ButtonModule } from 'primeng/button';
+import { ButtonGroupModule } from 'primeng/buttongroup';
+import { CardModule } from 'primeng/card';
+import { DialogModule } from 'primeng/dialog';
+import { CascadeSelectModule } from 'primeng/cascadeselect';
 
 @Component({
   selector: 'app-main',
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    DatePickerModule,
+    ButtonModule,
+    ButtonGroupModule,
+    CardModule,
+    DialogModule,
+    CascadeSelectModule
+  ],
   templateUrl: './main.component.html',
   styleUrl: './main.component.css',
 })
 export class MainComponent implements OnInit {
+  visible: boolean = false;
+
+  mostrarModal: boolean = false;
+
+  popupMensagem: string | null = null;
+
+  dataFiltro: Date;
+
+  novoToDo: any;
+
+  todos: Todo[] = [];
+
   constructor(private mainService: MainService) {
     const hoje = new Date();
-    const ano = hoje.getFullYear();
-    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-    const dia = String(hoje.getDate()).padStart(2, '0');
-    this.dataFiltro = `${ano}-${mes}-${dia}`;
+    this.dataFiltro = hoje;
     this.novoToDo = {
       descricao: '',
       concluido: false,
@@ -25,15 +49,9 @@ export class MainComponent implements OnInit {
     };
   }
 
-  mostrarModal: boolean = false;
-
-  popupMensagem: string | null = null;
-
-  dataFiltro: string;
-
-  novoToDo: any;
-
-  todos: Todo[] = [];
+  showDialog() {
+    this.visible = true;
+  }
 
   ngOnInit(): void {
     this.listarEmAndamentoPorData(); // chama automaticamente ao iniciar
@@ -107,7 +125,7 @@ export class MainComponent implements OnInit {
     this.mainService.criarTodo(this.novoToDo).subscribe({
       next: (res) => {
         this.ngOnInit();
-        this.fecharModal(); // fecha modal
+        this.visible = false
         this.novoToDo.descricao = ''; // limpa campo
         this.novoToDo.concluido = false; // reseta status
       },
